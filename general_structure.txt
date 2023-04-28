@@ -1,0 +1,15 @@
+TODOs:
+	front-end:
+		record:
+			- a welcome pageish maybe?
+			- Task n/N, Context or QnA m/M, so each piece revealed seperately
+			- place upload button
+			- dont allow and warn user if she hits next before stopping and uploading the recording
+			- inform the user about upload success
+
+	back-end:
+		- prepare the database: seperate json files for each task, each qa having unique ids. or firetore stuff with q1,a1,etc labels?
+		- implement user-db
+		- implement the backend server:
+			- /get-task
+			- /post-sound
