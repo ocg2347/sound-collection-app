@@ -20,7 +20,7 @@ const SignIn = () => {
   const handleSubmit = async () => {
     console.log("handleSubmit...");
     // make login api call to "44.201.213.82:8000/login"
-    const response = await fetch("http://44.201.213.82:8000/login", {
+    const response = await fetch("http://127.0.0.1:8000/login", {
       method: "POST",
       body: JSON.stringify({ username: inputEmail, password: inputPassword }),
       headers: {
