@@ -9,30 +9,29 @@ import {
 import "./SignIn.css";
 import { useState, useContext } from "react";
 import AuthContext from "../contexts/AuthProvider";
-// import { useCookies } from "react-cookie";
 
 const SignIn = () => {
-  const { loggedIn, setLoggedIn } = useContext(AuthContext);
-  // const [cookies, setCookie, removeCookie] = useCookies(["auth"]);
+  const { loggedIn, setLoggedIn, setUserName } = useContext(AuthContext);
   const [inputEmail, setInputEmail] = useState("");
   const [inputPassword, setInputPassword] = useState("");
-  // cookies["auth"] = auth;
+
   const handleSubmit = async () => {
     console.log("handleSubmit...");
-    // make login api call to "44.201.213.82:8000/login"
-    const response = await fetch("http://127.0.0.1:8000/login", {
+    console.log("inputEmail: ", inputEmail);
+    console.log("inputPassword: ", inputPassword);
+    await fetch("/api/login", {
       method: "POST",
       body: JSON.stringify({ username: inputEmail, password: inputPassword }),
       headers: {
         "Content-Type": "application/json",
-      },
+      }
+    }).then((res) => {
+      return res.json();
     })
-      .then((res) => {
-        return res.json();
-      })
       .then((data) => {
         console.log(data);
         if (data.result === "success") {
+          setUserName(inputEmail);
           setLoggedIn(true);
         } else {
           setLoggedIn(false);
@@ -84,6 +83,9 @@ const SignIn = () => {
               >
                 Sign in
               </button>
+              <>
+                Logged in: {loggedIn.toString()}
+              </>
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
