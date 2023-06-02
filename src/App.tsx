@@ -10,7 +10,7 @@ interface Task {
   text: string;
   type: string;
   subject: string;
-  paragraph: string;
+  paragraph: number;
   totalParagraphs: number;
   question: number;
   totalQuestions: number;
