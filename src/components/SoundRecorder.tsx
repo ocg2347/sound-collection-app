@@ -41,16 +41,17 @@ const SoundRecorder = ({ id, subject, taskDone, getTask, setTaskDone }: Props) =
       })
   }
 
+  // wrap buttons and recorder in a column
   return (
     <div className="container">
       <div className="sound-record-div">
         <div className="d-flex justify-content-center">
-          {status}
+          {/* {status}
           <ul>
             <li>status: {status}</li>
             <li>current subject: {subject}</li>
             <li>task id: {id}</li>
-          </ul>
+          </ul> */}
           <div className="btn-group" role="group">
             <button
               type="button"

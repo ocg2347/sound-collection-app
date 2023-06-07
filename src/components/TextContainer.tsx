@@ -1,5 +1,6 @@
-import "./TextContainer.css";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "./TextContainer.css";
 
 interface TextProps {
   task: Task | undefined;
@@ -40,20 +41,14 @@ const TextContainer = ({ task }: TextProps) => {
   return (
     <div className="genel">
       <div className="text-container">
-        <p>Paragraph {paragraph} / {totalParagraphs}</p>
-        <ProgressBar striped variant="success" now={progressParagraph} />
-        <p>
-          {type === "question" ? "Question" : null}
-          {type === "answer" ? "Answer" : null}
-          {"      "}
-          {question} / {totalQuestions}
-        </p>
-        <p>
-          {type === "context" ? "Context" : null}
-        </p>
-
-        <ProgressBar striped variant="success" now={progressQuestion} />
-        <h5>Text</h5>
+        Paragraph {paragraph} / {totalParagraphs}
+        <ProgressBar striped animated variant="success" now={progressParagraph}/>
+        {type === "question" ? `Question  ${question} / ${totalQuestions}` : null}   
+        {type === "answer" ? `Answer  ${question} / ${totalQuestions}` : null}          
+        {type === "context" ? "Context" : null}
+        <ProgressBar striped animated variant="success" now={progressQuestion} />
+        <br />
+        <h5>Text:</h5>
         <p>{text}</p>
 
       </div>

@@ -25,7 +25,11 @@
     /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(135deg, #9572b3, #e66496);  
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(135deg, #9572b3, #e66496);  
+    background: linear-gradient(135deg, #9572b3, #e66496);
+
+    /* no margin top and bottom*/
+    margin: 0px;
+    padding: 0px;
 }
 @keyframes logo-spin {
   from {

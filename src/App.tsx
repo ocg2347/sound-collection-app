@@ -1,5 +1,6 @@
 import TextContainer from "./components/TextContainer";
 import SoundRecorder from "./components/SoundRecorder";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 import SignIn from "./components/SignIn";
 import { useContext, useEffect, useState } from "react";
@@ -29,6 +30,7 @@ function App() {
   const [task, setTask] = useState<Task>();
   const [taskDownloading, setTaskDownloading] = useState<boolean>(false);
   const [taskDone, setTaskDone] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   const getTask = async () => {
     setTaskDownloading(true);
@@ -44,7 +46,14 @@ function App() {
       return res.json();
     }
     ).then((data) => {
-      setTask(data);
+      // if data contains message property, it means that the task is done
+      if (data.message) {
+        setMessage(data.message);
+        console.log(data);
+      }
+      else{
+        setTask(data);
+      }
       setTaskDownloading(false);
     }
     );
@@ -58,9 +67,10 @@ function App() {
   return (
     <div>
       <nav className="navbar">
-        <h5 style={{ marginLeft: "20px" }}>Sound Record App for Science 🚀</h5>
+        <h5 style={{ marginLeft: "20px", marginBottom: "5px", marginTop:"5px"}}>Sound Record App for Science 🚀</h5>
       </nav>
-      {(taskDownloading || (task === undefined)) ? <div className="spinner-grow   spinner-grow-sm" role="status"></div> :
+      {(taskDownloading || (task === undefined))  ? <div className="spinner-grow   spinner-grow-sm" role="status"></div> :
+        // now if the task does not compy with the interface, it will not be rendered:
         <>
           <TextContainer
             task={task}
@@ -74,6 +84,12 @@ function App() {
           />
         </>
       }
+      {message === "" ? null :
+        <div className="alert alert-success" role="alert">
+          {message}
+        </div>
+      }
+
     </div>
   );
 }
