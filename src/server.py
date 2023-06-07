@@ -7,7 +7,7 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 import json
 from schemas import LoginCredetials, TaskSchema, GetTaskSchema
-from utils import update_recorded_status, find_unfinished_task, save_recording
+from utils import update_recorded_status, find_unfinished_task, save_recording, get_new_subject
 
 # Use a service account.
 cred = credentials.Certificate('firebase_jey.json')
@@ -15,7 +15,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 textDb_colRef = db.collection('text-database')
 userDb_colRef = db.collection('users')
-
+N_SUBJECT_PER_USER = 3
 
 middleware = [
     Middleware(
@@ -50,16 +50,32 @@ def get_subject_dict(username:str):
 
 @app.post("/api/get-task")
 def get_task(params: GetTaskSchema):
+    # return {"message": "hello world"}
     user_doc = userDb_colRef.document(params.username).get()
     if not user_doc.exists:
-        return {"result": "fail"}
+        return {"message": ":S user does not exist"}
     user_dict = user_doc.to_dict()
     last_element = user_dict["last-element"]
     try:
         next_element = find_unfinished_task(textDb_colRef=textDb_colRef,
                                             subject=last_element["subject"])
-        if next_element==None:
-            return {"error": "inside try, could not find unfinished task!"}
+        if next_element==None: # if no task left in the current subject, try to switch to the next subject
+            # update user's done-subjects list
+            user_docRef = userDb_colRef.document(params.username)
+            user_docRef.set({"done-subjects": firestore.ArrayUnion([last_element["subject"]])}, merge=True)
+            # now check if user already finished her max n subjects:
+            if len(user_dict["done-subjects"])>=N_SUBJECT_PER_USER:
+                return {"message":"you have done all your tasks mate. thank you!"}
+            # if not, switch to the next subject
+            new_subject = get_new_subject(textDb_colRef)
+            if new_subject!=None:
+                next_element = find_unfinished_task(textDb_colRef=textDb_colRef,
+                                                    subject=new_subject)
+                user_docRef = userDb_colRef.document(params.username)
+                user_docRef.set({"last-element": {"subject": new_subject, "id": next_element.id}}, merge=True)
+                return next_element
+            else:
+                return {"message":"you have done all your tasks mate. thank you!"}
         else:
             return next_element
 
@@ -85,14 +101,28 @@ def upload_sound_record(username: str = Form(...),
         return {"error": str(e)}
 
 
-@app.get("/api/")
-def home():
-    subject_dict = get_subject_dict("dummy")
-    return subject_dict
-
-@app.get("/")
+@app.get("/api/test")
 def home():
     return {"hello": "world"}
+
+# add user to the database method. only input is the username
+@app.post("/api/add-user")
+def add_user(username: str = Form(...)):
+    # check if user already exists
+    user_doc = userDb_colRef.document(username).get()
+    if user_doc.exists:
+        return {"result": "user already exists"}
+    # create new user
+    user_docRef = userDb_colRef.document(username)
+    # get a new subject
+    new_subject = get_new_subject(textDb_colRef)
+    if new_subject!=None:
+        # assign the new subject to the user
+        textDb_colRef.document(new_subject).set({"assigned":True}, merge=True)
+        user_docRef.set({"password":"abcde", "last-element": {"subject": new_subject, "id": ""}}, merge=True)
+        return {"result": "success"}
+    else:
+        return {"result": "no more subjects left"}
 
 if __name__ == "__main__":
     uvicorn.run(app,  port=8000)

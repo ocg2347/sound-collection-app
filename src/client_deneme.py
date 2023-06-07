@@ -5,17 +5,26 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import db
 
+# adds new user:
 resp = requests.request(
     "POST",
-   url="http://127.0.0.1:8000/get-task",
-    # url="http://127.0.0.1:8000/login",
-    data=json.dumps({
-        "username": "dummy",
-        "password": "abcde",
-    }),
+    url="http://127.0.0.1:8000/api/add-user",
+    data={
+        "username": "alicanacar"
+    },
 )
-resp = resp.json()
-print(resp)
+print(resp.json())
+# resp = requests.request(
+#     "POST",
+#    url="http://127.0.0.1:8000/get-task",
+#     # url="http://127.0.0.1:8000/login",
+#     data=json.dumps({
+#         "username": "dummy",
+#         "password": "abcde",
+#     }),
+# )
+# resp = resp.json()
+# print(resp)
 # id = resp["id"]
 # subject = resp["subject"]
 # print(id, subject)

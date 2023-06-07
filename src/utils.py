@@ -16,6 +16,15 @@ def update_recorded_status(subject_dict: dict, id: str):
                 task["context"]["recorded"] = True
     return subject_dict
 
+def get_new_subject(textDb_colRef: firestore.CollectionReference):
+    # iterate over documents in textDb_colRef and find the next subject
+    for doc in textDb_colRef.stream():
+        # check if "task_list" is in the document
+        doc_dict = doc.to_dict()
+        print(doc_dict)
+        if "task_list" in doc_dict.keys() and (doc_dict["assigned"]==False):
+            return doc.id
+    return None
 
 def find_unfinished_task(textDb_colRef: firestore.CollectionReference,
                         subject: str):
@@ -61,9 +70,10 @@ def find_unfinished_task(textDb_colRef: firestore.CollectionReference,
 
 def save_recording(docRef: firestore.DocumentReference,
                    id: str,
-                   file: UploadFile):
+                   file: UploadFile,
+                   dir: str):
     # save the file on local with id as name
-    filename = f"{id}.wav"
+    filename = "/home/ec2-user/sound-collection-api/sound_recordings/" + str(id) + ".wav"
     with open(filename, "wb") as buffer:
         buffer.write(file.file.read())
     # then update document
@@ -71,4 +81,5 @@ def save_recording(docRef: firestore.DocumentReference,
         update_recorded_status(
             subject_dict=docRef.get().to_dict(),
             id=id
-            ))
+        )
+    )

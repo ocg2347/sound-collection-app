@@ -16,12 +16,23 @@ def main():
     db = firestore.client()
     col_ref = db.collection('text-database')
 
+    n_subject = 5000
+    n_task = 3000
+    n_qa = 2000
+    i_s = 0
     for subject in dataset:
+        i_s+=1
+        if i_s>=n_subject:
+            break
+
         title = subject["title"]
         task_list = []
 
+        
         # iterate over paragraphs:
         for task in subject["paragraphs"]:  # paragraph:dict
+            if len(task_list)>=n_task:
+                break
             context = task["context"]
             context_id = str(uuid.uuid4())
             task_dict = {}
@@ -33,15 +44,17 @@ def main():
             }
             task_dict["qas"] = []
             for qa in task["qas"]:
+                if len(task_dict["qas"])>=n_qa:
+                    break
                 task_dict["qas"].append(
                     {
                         "question": {
-                            "id": qa["id"],
+                            "id": qa["id"]+"_q",
                             "text": qa["question"],
                             "recorded": False
                         },
                         "answer": {
-                            "id": str(uuid.uuid4()),
+                            "id": qa["id"]+"_a",
                             "text": qa["answers"][0]["text"],
                             "recorded": False
                         }
@@ -49,7 +62,9 @@ def main():
                 )
             task_list.append(task_dict)
         database[title] = task_list
-        col_ref.document(title).set({"task_list": task_list})
+        col_ref.document(title).set({
+            "assigned":False,
+            "task_list": task_list})
     open("db.json", "w").write(json.dumps(database, indent=4))
 
 
