@@ -15,7 +15,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 textDb_colRef = db.collection('text-database')
 userDb_colRef = db.collection('users')
-N_SUBJECT_PER_USER = 3
+N_SUBJECT_PER_USER = 4
 
 middleware = [
     Middleware(
@@ -124,5 +124,9 @@ def add_user(username: str = Form(...)):
     else:
         return {"result": "no more subjects left"}
 
+@app.get("/")
+def home():
+    return {"hello": "world"}
+
 if __name__ == "__main__":
-    uvicorn.run(app,  port=8000)
+    uvicorn.run(app,  host="0.0.0.0", port=8000)

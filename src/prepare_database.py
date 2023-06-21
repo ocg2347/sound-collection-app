@@ -34,7 +34,7 @@ def main():
             if len(task_list)>=n_task:
                 break
             context = task["context"]
-            context_id = str(uuid.uuid4())
+            context_id = z
             task_dict = {}
             task_dict["context"] = {
                 "id": context_id,
@@ -68,5 +68,20 @@ def main():
     open("db.json", "w").write(json.dumps(database, indent=4))
 
 
+def push_whole_db_directly():
+    # open db.json
+    database = json.load(open("db.json", "r"))
+    # Use a service account.
+    cred = credentials.Certificate('firebase_jey.json')
+    app = firebase_admin.initialize_app(cred)
+    db = firestore.client()
+    col_ref = db.collection('text-database')
+    for subject in database:
+        task_list = [task for task in database[subject]]
+        col_ref.document(subject).set({
+            "assigned":False,
+            "task_list": task_list})
+
 if __name__ == '__main__':
-    main()
+    # main()
+    push_whole_db_directly()

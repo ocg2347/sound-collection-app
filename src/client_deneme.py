@@ -5,12 +5,15 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import db
 
+
+import requests
+usename = "dummy"
 # adds new user:
 resp = requests.request(
     "POST",
-    url="http://127.0.0.1:8000/api/add-user",
+    url="http://ec2-54-82-21-40.compute-1.amazonaws.com:8000/api/add-user",
     data={
-        "username": "alicanacar"
+        "username": usename
     },
 )
 print(resp.json())
