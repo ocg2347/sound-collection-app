@@ -10,7 +10,7 @@ usename = "dummy"
 #adds new user:
 resp = requests.request(
     "POST",
-    url="http://ec2-54-82-21-40.compute-1.amazonaws.com:8000/api/add-user",
+    url="http://ec2-52-204-228-208.compute-1.amazonaws.com:8000/api/add-user",
     data={
         "username": usename
     },
