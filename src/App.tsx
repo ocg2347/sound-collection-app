@@ -18,7 +18,7 @@ interface Task {
 }
 
 function App() {
-
+  
   // reach out to the auth context
   const { loggedIn, userName } = useContext(AuthContext);
   // get the auth state and setter from the context:

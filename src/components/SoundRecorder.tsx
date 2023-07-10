@@ -1,6 +1,7 @@
 import { useReactMediaRecorder } from "react-media-recorder";
 import "./SoundRecorder.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../contexts/AuthProvider";
 
 interface Props {
   id: string;
@@ -11,16 +12,14 @@ interface Props {
 }
 
 const SoundRecorder = ({ id, subject, taskDone, getTask, setTaskDone }: Props) => {
-
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ video: false });
-
+  const { userName } = useContext(AuthContext);
+  const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ video: false });
   const [soundUploading, setSoundUploading] = useState<boolean>(false);
   const [uploadFailed, setUploadFailed] = useState<boolean>(false);
 
   const uploadSound = async () => {
     const formData = new FormData();
-    formData.append("username", "dummy");
+    formData.append("username", userName);
     formData.append("subject", subject);
     formData.append("id", id);
     // now save the blob to a local sound file
