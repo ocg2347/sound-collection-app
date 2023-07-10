@@ -66,12 +66,11 @@ def find_unfinished_task(textDb_colRef: firestore.CollectionReference,
                     totalQuestions=nQas,
                 )
     return None
-
+ 
 
 def save_recording(docRef: firestore.DocumentReference,
                    id: str,
-                   file: UploadFile,
-                   dir: str):
+                   file: UploadFile):
     # save the file on local with id as name
     filename = "/home/ec2-user/sound-collection-api/sound_recordings/" + str(id) + ".wav"
     with open(filename, "wb") as buffer:

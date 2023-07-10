@@ -96,9 +96,11 @@ def upload_sound_record(username: str = Form(...),
                                 file=file)
         user_docRef = userDb_colRef.document(username)
         user_docRef.set({"last-element": {"subject": subject, "id": id}}, merge=True)
+
         return {"result": "success"}
     except Exception as e:
-        return {"error": str(e)}
+        print(e)
+        return {"result": "fail"}
 
 
 @app.get("/api/test")
